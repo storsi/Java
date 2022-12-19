@@ -26,7 +26,7 @@ public class MainFrame extends JFrame{
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
 
-        mainPanel = new MainPanel(server, this);
+        mainPanel = new MainPanel(this);
         mailPanel = new MailPanel(mainPanel);
 
         accessPanel = new AccessPanel(server, mailPanel, mainPanel, this);
@@ -50,7 +50,7 @@ public class MainFrame extends JFrame{
         setVisible(true);
     }
 
-    public MainPanel getMailPanel() {
-        return MailPanel;
+    public MailPanel getMailPanel() {
+        return mailPanel;
     }
 }

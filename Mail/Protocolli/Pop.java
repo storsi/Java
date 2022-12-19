@@ -16,10 +16,9 @@ public class Pop {
     private Client client;
     private ArrayList<Mail> nuoveMails;
 
-    public Pop(Server server, Account account, Client client) {
+    public Pop(Server server, Account account) {
         this.server = server;
         this.account = account;
-        this.client = client;
         nuoveMails = new ArrayList<Mail>();
     }
 

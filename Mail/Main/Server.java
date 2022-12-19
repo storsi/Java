@@ -67,10 +67,6 @@ public class Server{
     public void addMail(Mail mail) {
         mailsDaInviare.add(mail);
 
-        for(int i = 0; i < account.size(); i++) {
-            cercaMail(account.get(i));
-        }
-
     }
 
     public boolean autenticazione(Account acc) {

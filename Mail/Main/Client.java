@@ -31,7 +31,7 @@ public class Client {
 
         protSmtp = new Smtp(this, server);
 
-        new Thread(new richiestaMail(this, account, pop, imap)).start();
+        new Thread(new richiestaMail(this, account)).start();
     }
 
     public void mandaMail(Mail mail) {
@@ -91,8 +91,6 @@ class richiestaMail implements Runnable {
 
     private Client client;
     private Account account;
-    private Pop pop;
-    private Imap imap;
 
     public richiestaMail(Client client, Account account) {
         this.client = client;
@@ -106,7 +104,12 @@ class richiestaMail implements Runnable {
                 client.connetti();
 
                 client.output("New Data? " + account.getMail() + "\n");
-                this.wait(1000);
+                
+                try {
+                    this.wait(1000);
+                } catch (Exception e) {
+                    // TODO: handle exception
+                }
 
                 if(client.input().equals("Yes")) {
                     account.mailDaLeggere();

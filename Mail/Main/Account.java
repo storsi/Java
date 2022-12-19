@@ -18,7 +18,7 @@ public class Account {
 
     public Account(String email, String password, Server server) {
         pop = new Pop(server, this);
-        imap = new Imap(server, email);
+        imap = new Imap(server, this);
         mailInAttesa = new ArrayList<Mail>();
 
         this.server = server;
