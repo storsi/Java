@@ -3,6 +3,7 @@ package Mail.Main;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.InputStreamReader;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.ArrayList;
 
@@ -12,6 +13,7 @@ import Mail.Protocolli.Smtp;
 public class Client {
     
     private Socket socket;
+    private InetSocketAddress Serv;
     private int porta;
     private Server server;
     private String risposta;
@@ -31,7 +33,7 @@ public class Client {
 
         protSmtp = new Smtp(this, server);
 
-        new Thread(new richiestaMail(this, account)).start();
+        //new Thread(new richiestaMail(this, account)).start();
     }
 
     public void mandaMail(Mail mail) {
@@ -45,8 +47,10 @@ public class Client {
     }
 
     public void connetti() {
+        System.out.println("Client richiede sulla porta: " + porta);
         try {
             socket = new Socket("localhost", porta);
+            
             System.out.println("[Client] Connesso");
         } catch (Exception e) {
             System.err.println("[Client] Errore nella connessione");
@@ -112,6 +116,7 @@ class richiestaMail implements Runnable {
                 }
 
                 if(client.input().equals("Yes")) {
+                    System.out.println(client.input());
                     account.mailDaLeggere();
                 }
 

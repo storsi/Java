@@ -24,7 +24,7 @@ public class Smtp{
 
     private void helo() {
         //Apre la connessione con il server inviando il proprio IP o il nome della macchina
-        server.connetti(client);
+        //server.connetti(client);
         
         if(attendi("220") < 300) {
         client.output("IP:localhost\n");

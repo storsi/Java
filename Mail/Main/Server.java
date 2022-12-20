@@ -7,8 +7,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
-import Mail.Interface.MailPanel;
-
 public class Server{
     
     private ServerSocket serverSocket;
@@ -21,25 +19,35 @@ public class Server{
         this.porta = porta;
         mailsDaInviare = new ArrayList<Mail>();
         account = new ArrayList<Account>();
+
+        connetti();
     }
 
-    public void connetti(Client client) {
-        try{
-            do{
-                serverSocket = new ServerSocket(porta);
+    public void setPortaDiSacolto(int porta) {
+        this.porta = porta;
+    }
 
-                //client.connetti();
+    public void connetti() {
+        System.out.println("Server in ascolto su porta: " + porta);
+        Thread attesaConnessioni = new Thread(() -> {
+            try{
+                do{
+                    serverSocket = new ServerSocket(porta);
+    
+                    socketClient = serverSocket.accept();
+                    System.out.println("[Server] Connesso");
+    
+                    //Apre un nuovo thread dedicato al client
+                    new Thread(new ClientThread(socketClient, this)).start();
+                }while(true);
+    
+            }catch(Exception e) {
+                System.err.println("[Server] Errore nella connessione " + e.getLocalizedMessage());
+            }
+        });
 
-                socketClient = serverSocket.accept();
-                System.out.println("[Server] Connesso");
-
-                //Apre un nuovo thread dedicato al client
-                new Thread(new ClientThread(socketClient, this)).start();
-            }while(true);
-
-        }catch(Exception e) {
-            System.err.println("[Server] Errore nella connessione " + e.getLocalizedMessage());
-        }
+        attesaConnessioni.start();
+        
     }
 
     public Account checkAccount(String email, String password) {
@@ -112,7 +120,7 @@ public class Server{
         }
     }
 
-    public void chiudiConnessione() {
+    /*public void chiudiConnessione() {
         try {
             serverSocket.close();
             socketClient.close();
@@ -120,7 +128,7 @@ public class Server{
         } catch (Exception e) {
             System.err.println("[Server] Errore nella chiusura dei socket");
         }
-    }
+    }*/
 }
 
 class ClientThread implements Runnable{
