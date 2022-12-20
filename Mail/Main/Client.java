@@ -36,7 +36,7 @@ public class Client {
             do {
                 if(!staMandando()) {
                     System.out.println("Ciclo!");
-                    server.changePort(12345);
+                    //server.changePort(12345);
                     connetti(12345);
     
                     output("New Data? " + account.getMail() + "\n");
@@ -49,7 +49,7 @@ public class Client {
     
                     if(input().equals("Yes")) {
                         System.out.println(input());
-                        account.mailDaLeggere();
+                        //account.mailDaLeggere();
                     }
     
                     chiudiConnessione();

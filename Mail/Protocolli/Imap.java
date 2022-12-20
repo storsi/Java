@@ -30,6 +30,6 @@ public class Imap {
     }
 
     private void expunge() {
-        server.deleteMails();
+        //server.deleteMails();
     }
 }

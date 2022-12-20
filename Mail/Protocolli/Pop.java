@@ -22,7 +22,7 @@ public class Pop {
         nuoveMails = new ArrayList<Mail>();
     }
 
-    public ArrayList<Mail> getEmail() {
+    /*public ArrayList<Mail> getEmail() {
         ArrayList<Mail> provvisorio;
         if(autenticazione()) {
             transazione();
@@ -35,7 +35,7 @@ public class Pop {
         return provvisorio;
     }
 
-    private boolean autenticazione() {
+    /*private boolean autenticazione() {
         return server.autenticazione(account);
     }
 
@@ -49,5 +49,5 @@ public class Pop {
     private void aggiornamento() {
         //Il server elimina i messaggi contrassegnati con il flag delete
         server.deleteMails();
-    } 
+    } */
 }
