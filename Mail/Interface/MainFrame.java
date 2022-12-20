@@ -36,7 +36,6 @@ public class MainFrame extends JFrame{
         mainPanel.setPannelli(mailPanel, impostazioniPanel);
         accessPanel.addImpostazioniPanel(impostazioniPanel);
         mailPanel.setPanel(guardaMailPanel);
-        mainPanel.setClient(accessPanel.getClient());
 
         pannelloGenerale.add(impostazioniPanel);
         pannelloGenerale.add(mailPanel);

@@ -3,18 +3,14 @@ package Mail.Main;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.InputStreamReader;
-import java.net.InetSocketAddress;
-import java.net.Socket;
-import java.util.ArrayList;
 
-import Mail.Protocolli.Pop;
+import java.net.Socket;
+
 import Mail.Protocolli.Smtp;
 
 public class Client {
     
     private Socket socket;
-    private InetSocketAddress Serv;
-    private int porta;
     private Server server;
     private String risposta;
     private InputStreamReader in;
@@ -27,13 +23,42 @@ public class Client {
 
     public Client(Server server, Account account) {
         staMandando = false;
-        this.porta = 12345;
         this.server = server;
         this.account = account;
 
         protSmtp = new Smtp(this, server);
 
-        //new Thread(new richiestaMail(this, account)).start();
+        //richiestaMail();
+    }
+
+    private void richiestaMail() {
+        Thread richiesta = new Thread(() -> {
+            do {
+                if(!staMandando()) {
+                    System.out.println("Ciclo!");
+                    server.changePort(12345);
+                    connetti(12345);
+    
+                    output("New Data? " + account.getMail() + "\n");
+                    
+                    try {
+                        this.wait(1000);
+                    } catch (Exception e) {
+                        // TODO: handle exception
+                    }
+    
+                    if(input().equals("Yes")) {
+                        System.out.println(input());
+                        account.mailDaLeggere();
+                    }
+    
+                    chiudiConnessione();
+                }
+    
+            }while(true);
+        });
+
+        richiesta.start();
     }
 
     public void mandaMail(Mail mail) {
@@ -46,14 +71,14 @@ public class Client {
         return staMandando;
     }
 
-    public void connetti() {
+    public void connetti(int porta) {
         System.out.println("Client richiede sulla porta: " + porta);
         try {
             socket = new Socket("localhost", porta);
             
             System.out.println("[Client] Connesso");
         } catch (Exception e) {
-            System.err.println("[Client] Errore nella connessione");
+            System.err.println("[Client] Errore nella connessione " + e.getLocalizedMessage());
         }
     }
 
@@ -88,42 +113,5 @@ public class Client {
         } catch (Exception e) {
             System.err.println("[Client] Errore nella chiusura del socket");
         }
-    }
-}
-
-class richiestaMail implements Runnable {
-
-    private Client client;
-    private Account account;
-
-    public richiestaMail(Client client, Account account) {
-        this.client = client;
-        this.account = account;
-    }
-
-    @Override
-    public void run() {
-        do {
-            if(!client.staMandando()) {
-                client.connetti();
-
-                client.output("New Data? " + account.getMail() + "\n");
-                
-                try {
-                    this.wait(1000);
-                } catch (Exception e) {
-                    // TODO: handle exception
-                }
-
-                if(client.input().equals("Yes")) {
-                    System.out.println(client.input());
-                    account.mailDaLeggere();
-                }
-
-                client.chiudiConnessione();
-            }
-
-        }while(true);
-        
     }
 }

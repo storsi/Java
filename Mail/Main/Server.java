@@ -23,15 +23,17 @@ public class Server{
         connetti();
     }
 
-    public void setPortaDiSacolto(int porta) {
+    public void changePort(int porta) {
         this.porta = porta;
+        
     }
 
     public void connetti() {
-        System.out.println("Server in ascolto su porta: " + porta);
+        //System.out.println("Server in ascolto su porta: " + porta);
         Thread attesaConnessioni = new Thread(() -> {
             try{
                 do{
+                    System.out.println("Server in ascolto su porta: " + porta);
                     serverSocket = new ServerSocket(porta);
     
                     socketClient = serverSocket.accept();

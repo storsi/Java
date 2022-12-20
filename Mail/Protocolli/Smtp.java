@@ -10,6 +10,7 @@ public class Smtp{
     private Client client;
     private Server server;
     private Mail mail;
+    private final int PORTA_SMTP = 25;
 
     public Smtp(Client client, Server server) {
         this.client = client;
@@ -18,13 +19,14 @@ public class Smtp{
 
     public void mandaMail(Mail mail) {
         this.mail = mail;
+        server.changePort(PORTA_SMTP);
         helo();
         client.chiudiConnessione();
     }
 
     private void helo() {
         //Apre la connessione con il server inviando il proprio IP o il nome della macchina
-        //server.connetti(client);
+        client.connetti(PORTA_SMTP);
         
         if(attendi("220") < 300) {
         client.output("IP:localhost\n");
