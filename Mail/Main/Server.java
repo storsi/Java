@@ -68,6 +68,7 @@ public class Server{
     
                     //Apre un nuovo thread dedicato al client
                     new Thread(new ClientThread(socketClient25, this)).start();
+                    do{}while(!socketClient25.isClosed());
                 
                 }while(true);
     
@@ -79,7 +80,7 @@ public class Server{
         Thread attesaConnessioni110 = new Thread(() -> {
             try{
                 do{
-                    serverSocket110 = new ServerSocket(110);
+                    serverSocket110 = new ServerSocket(7979);
     
                     socketClient110 = serverSocket110.accept();
                     System.out.println("[Server] Connesso");
@@ -131,7 +132,7 @@ public class Server{
         }
 
         if(!emailEsistente) {
-            Account acc = new Account(email, password, this);
+            Account acc = new Account(email, password);
             //cercaMail(acc);
             this.account.add(acc);
             return acc;
@@ -197,15 +198,14 @@ public class Server{
         }
     }
 
-    /*public void chiudiConnessione() {
+    public void chiudiConnessione(Socket socketClient) {
         try {
-            serverSocket.close();
             socketClient.close();
             System.out.println("[Server] Chiusura effettuata");
         } catch (Exception e) {
             System.err.println("[Server] Errore nella chiusura dei socket");
         }
-    }*/
+    }
 }
 
 class ClientThread implements Runnable{
@@ -217,6 +217,7 @@ class ClientThread implements Runnable{
     private Mail mail;
     private Server server;
     private boolean openCodeSent = false;
+    private final int OK = 250;
 
     ClientThread(Socket socketClient, Server server) {
         mail = new Mail();
@@ -243,9 +244,7 @@ class ClientThread implements Runnable{
                     openCodeSent = true;
                 }
     
-                do {
-                    input = reader.readLine();
-                } while(input == null);
+                input = reader.readLine();
     
                 
                 
@@ -288,27 +287,27 @@ class ClientThread implements Runnable{
                 if(input.contains("IP:")) {
                     
                     mail.setIpmandante(input);
-                    out.println("250\n");
+                    out.println(OK);
                 
                 } else 
                 
                 if(input.contains("FROM:")) {
-                    
+                    System.out.println("Mail From arrivata");
                     mail.setEmailMandante(input);
-                    out.println("250\n");
+                    out.println("250");
 
                 } else 
                 
                 if(input.contains("TO:")) {
                     
                     mail.setEmailDestinatario(input);
-                    out.println("250\n");
+                    out.println("250");
                 
                 } else 
                 
                 if(input.equals("Ready for Data?")) {
                     
-                    out.println("354\n");
+                    out.println("354");
                 
                 } else 
                 
@@ -323,18 +322,16 @@ class ClientThread implements Runnable{
                 else{
                     
                     mail.setContenutoMail(input);
-                    out.println("250\n");
+                    out.println("250");
                 
                 }
             }while(quit);
         } catch (Exception e) {
-            System.err.println("Errore nel Thread");
+            System.err.println("Errore nel Thread " );
             e.printStackTrace();
         } 
-        
-        //System.out.println(mail.toString());
+        server.chiudiConnessione(socketClient);
         server.addMail(mail);
-        //server.chiudiConnessione();
 
     }
 

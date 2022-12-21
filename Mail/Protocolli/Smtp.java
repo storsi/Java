@@ -8,12 +8,10 @@ public class Smtp{
     
     //private String mailFrom;
     private Client client;
-    private Server server;
     private Mail mail;
 
-    public Smtp(Client client, Server server) {
+    public Smtp(Client client) {
         this.client = client;
-        this.server = server;
     }
 
     public void mandaMail(Mail mail) {
@@ -26,10 +24,10 @@ public class Smtp{
         //Apre la connessione con il server inviando il proprio IP o il nome della macchina
         client.connetti(25);
         
-        if(attendi("220") < 300) {
+        if(client.input().equals("220")) {
         client.output("IP:localhost\n");
 
-        if(attendi("250") < 300) mailFrom();
+        if(client.input().equals("250")) mailFrom();
         }
         else System.out.println("[SMTP] Errore in Helo");
 
@@ -39,7 +37,7 @@ public class Smtp{
         //Invia l'intestazione della posta (FROM: propria email)
         client.output("FROM:" + mail.getEmailMandante() + "\n");
         
-        if(attendi("250") < 300) rcptTo();
+        if(client.input().equals("250")) rcptTo();
         else System.out.println("[SMTP] Errore in mailFrom");
     }
 
@@ -47,7 +45,7 @@ public class Smtp{
         //Invia altre info tra cui la mail del destinatario (TO: email destinatario)
         client.output("TO:" + mail.getEmailDestinatario() + "\n");
 
-        if(attendi("250") < 300) data();
+        if(client.input().equals("250")) data();
         else System.out.println("[SMTP] Errore in rcptTo");
     }
 
@@ -56,7 +54,7 @@ public class Smtp{
 
         client.output("Ready for Data?\n");
 
-        if(attendi("354") < 300) sendMessage();
+        if(client.input().equals("354")) sendMessage();
         else System.out.println("[SMTP] Errore in Data");
     }
 
@@ -64,22 +62,13 @@ public class Smtp{
         //contenuto del messaggio (ogni linea termina con un punto)
         client.output(mail.getOggettoMail() + ":" + mail.getContenutoMail() + "\n");
 
-        if(attendi("250") < 300) quit();
+        if(client.input().equals("250")) quit();
         else System.out.println("[SMTP] Errore in sendMessaggio");
     }
 
     private void quit() {
         //chiude la connessione
         client.output("Quit!!\n");
-    }
-
-    private int attendi(String messaggio) {
-        int indice = 0;
-            do{
-                indice++;
-            }while(!client.input().equals(messaggio) && indice < 300);
-
-        return indice;
     }
 }
 

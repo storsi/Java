@@ -11,7 +11,6 @@ import Mail.Protocolli.Smtp;
 public class Client {
     
     private Socket socket;
-    private Server server;
     private String risposta;
     private InputStreamReader in;
     private BufferedReader reader;
@@ -21,12 +20,11 @@ public class Client {
 
     private Smtp protSmtp;
 
-    public Client(Server server, Account account, boolean mainClient) {
+    public Client( Account account, boolean mainClient) {
         staMandando = false;
-        this.server = server;
         this.account = account;
 
-        protSmtp = new Smtp(this, server);
+        protSmtp = new Smtp(this);
 
         if(mainClient) {}
             //richiestaMail();

@@ -11,20 +11,18 @@ import Mail.Main.Mail;
 public class Pop {
     //porta 110
 
-    private Server server;
     private Account account;
     private Client client;
     private ArrayList<Mail> nuoveMails;
 
-    public Pop(Server server, Account account) {
-        this.client = new Client(server, account, false);
-        this.server = server;
+    public Pop(Account account) {
+        this.client = new Client(account, false);
         this.account = account;
         nuoveMails = new ArrayList<Mail>();
     }
 
     public ArrayList<Mail> getEmail() {
-        client.connetti(110);
+        client.connetti(7979);
 
         ArrayList<Mail> provvisorio;
         if(autenticazione()) {
@@ -61,8 +59,6 @@ public class Pop {
             nuoveMails.add(new Mail(comp[1], account.getMail(), comp[2], comp[3]));
 
         }while(!client.input().equals("DONE"));
-
-        aggiornamento();
     }
 
     private void aggiornamento() {

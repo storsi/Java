@@ -9,15 +9,13 @@ import Mail.Main.Server;
 
 public class Imap {
 
-    private Server server;
     private Account account;
     private Client client;
     private ArrayList<Mail> nuoveMails;
     
-    public Imap(Server server, Account account) {
-        this.server = server;
+    public Imap(Account account) {
         this.account = account;
-        this.client = new Client(server, account, false);
+        this.client = new Client(account, false);
 
         nuoveMails = new ArrayList<Mail>();
     }

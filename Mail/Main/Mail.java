@@ -37,6 +37,7 @@ public class Mail {
     }
 
     public void setContenutoMail(String contenutoMail) {
+        System.out.println(contenutoMail);
         String[] eCont = contenutoMail.split(":");
         this.oggettoMail = eCont[0];
         this.contenutoMail = eCont[1];

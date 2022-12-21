@@ -132,7 +132,6 @@ public class MailPanel extends JPanel implements ActionListener{
 
     public void setAccount(Account account) {
         this.account = account;
-        account.mailDaLeggere();
     }
 
     public String getMail() {

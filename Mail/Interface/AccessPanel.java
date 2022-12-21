@@ -79,7 +79,7 @@ public class AccessPanel extends JPanel implements ActionListener{
             mainPanel.setVisible(true);
             mailPanel.setAccount(account);
             imp.setAccount(account);
-            mainPanel.setClient(new Client(server, account, true));
+            mainPanel.setClient(new Client(account, true));
         }
     }
 

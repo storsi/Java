@@ -13,13 +13,11 @@ public class Account {
     private String protocollo;
     private Pop pop;
     private Imap imap;
-    private Server server;
 
-    public Account(String email, String password, Server server) {
-        pop = new Pop(server, this);
-        imap = new Imap(server, this);
+    public Account(String email, String password) {
+        pop = new Pop(this);
+        imap = new Imap(this);
 
-        this.server = server;
         this.email = email;
         this.password = password;
 
