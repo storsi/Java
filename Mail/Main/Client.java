@@ -31,40 +31,8 @@ public class Client {
         //richiestaMail();
     }
 
-    private void richiestaMail() {
-        Thread richiesta = new Thread(() -> {
-            do {
-                if(!staMandando()) {
-                    System.out.println("Ciclo!");
-                    //server.changePort(12345);
-                    connetti(12345);
-    
-                    output("New Data? " + account.getMail() + "\n");
-                    
-                    try {
-                        this.wait(1000);
-                    } catch (Exception e) {
-                        // TODO: handle exception
-                    }
-    
-                    if(input().equals("Yes")) {
-                        System.out.println(input());
-                        //account.mailDaLeggere();
-                    }
-    
-                    chiudiConnessione();
-                }
-    
-            }while(true);
-        });
-
-        richiesta.start();
-    }
-
     public void mandaMail(Mail mail) {
-        staMandando = true;
         protSmtp.mandaMail(mail);
-        staMandando = false;
     }
 
     public boolean staMandando() {

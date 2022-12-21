@@ -14,6 +14,7 @@ public class Server{
     private int porta;
     private ArrayList<Mail> mailsDaInviare;
     private ArrayList<Account> account;
+    private Thread attesaConnessioni;
 
     public Server(int porta) {
         this.porta = porta;
@@ -25,12 +26,11 @@ public class Server{
 
     public void changePort(int porta) {
         this.porta = porta;
-        
     }
 
     public void connetti() {
         //System.out.println("Server in ascolto su porta: " + porta);
-        Thread attesaConnessioni = new Thread(() -> {
+        attesaConnessioni = new Thread(() -> {
             try{
                 do{
                     System.out.println("Server in ascolto su porta: " + porta);
@@ -41,7 +41,9 @@ public class Server{
     
                     //Apre un nuovo thread dedicato al client
                     new Thread(new ClientThread(socketClient, this)).start();
+                
                 }while(true);
+                    //interrompiThread();
     
             }catch(Exception e) {
                 System.err.println("[Server] Errore nella connessione " + e.getLocalizedMessage());
@@ -50,6 +52,10 @@ public class Server{
 
         attesaConnessioni.start();
         
+    }
+
+    private void interrompiThread() {
+        attesaConnessioni.interrupt();
     }
 
     public Account checkAccount(String email, String password) {
@@ -72,6 +78,15 @@ public class Server{
         }
 
         return null;
+    }
+
+    public boolean searchAccount(String mail, String password) {
+        for(int i = 0; i < account.size(); i++) {
+            if(account.get(i).getMail().equals(mail) && account.get(i).getPassword().equals(password))
+                return true;
+        }
+
+        return false;
     }
 
     public void addMail(Mail mail) {
@@ -176,7 +191,33 @@ class ClientThread implements Runnable{
                 
                 //Controllo messaggi in arrivo
                 
-                
+                if(input.contains("AUTH")) {
+                    String[] comp = input.split(":");
+                    if(server.searchAccount(comp[1], comp[2]))
+                        out.println("T\n");
+                    else    
+                        out.println("F\n");
+                }
+
+                if(input.contains("TRANS")) {
+                    String[] comp = input.split(":");
+
+                    ArrayList<Mail> messaggi = server.getMail(comp[1], comp[2]);
+
+                    for(int i = 0; i < messaggi.size(); i++) {
+                        out.println("NM:" + 
+                                messaggi.get(i).getEmailMandante() + ":" + 
+                                messaggi.get(i).getOggettoMail() + ":" +
+                                messaggi.get(i).getContenutoMail() + "\n");
+                    }
+
+                    out.println("DONE\n");
+                }
+
+                if(input.equals("UPDATE")) {
+                    server.deleteMails();
+                }
+
                 if(input.contains("IP:")) {
                     
                     mail.setIpmandante(input);

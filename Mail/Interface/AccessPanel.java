@@ -68,7 +68,7 @@ public class AccessPanel extends JPanel implements ActionListener{
         
 
         if(!ta_account.getText().equals("") && !ta_password.getText().equals(""))
-            //account = server.checkAccount(ta_account.getText(), ta_password.getText());
+            account = server.checkAccount(ta_account.getText(), ta_password.getText());
 
         if(account != null) {
             setVisible(false);

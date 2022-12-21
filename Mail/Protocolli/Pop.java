@@ -17,17 +17,22 @@ public class Pop {
     private ArrayList<Mail> nuoveMails;
 
     public Pop(Server server, Account account) {
+        this.client = new Client(server, account);
         this.server = server;
         this.account = account;
         nuoveMails = new ArrayList<Mail>();
     }
 
-    /*public ArrayList<Mail> getEmail() {
+    public ArrayList<Mail> getEmail() {
+        client.connetti(12345);
+
         ArrayList<Mail> provvisorio;
         if(autenticazione()) {
             transazione();
             aggiornamento();
         }
+
+        client.chiudiConnessione();
 
         provvisorio = nuoveMails;
         nuoveMails.removeAll(nuoveMails);
@@ -35,19 +40,33 @@ public class Pop {
         return provvisorio;
     }
 
-    /*private boolean autenticazione() {
-        return server.autenticazione(account);
+    private boolean autenticazione() {
+        
+        client.output("AUTH:" + account.getMail() + ":" + account.getPassword() + "\n");
+
+        String risp = client.input();
+
+        if(risp.equals("T"))
+            return true;
+        else    
+            return false;
     }
 
     private void transazione() {
         //Il client ottiene i messaggi e li segna sul server con il flag delete
         //Contiene anche la funzione dele (contrassegna con il flag delete)
-        nuoveMails = server.getMail(account.getMail(), "POP");
+        client.output("TRANS:" + account.getMail() + ":POP\n");
+        do {
+            String[] comp = client.input().split(":");
+            nuoveMails.add(new Mail(comp[1], account.getMail(), comp[2], comp[3]));
+
+        }while(!client.input().equals("DONE"));
+
         aggiornamento();
     }
 
     private void aggiornamento() {
         //Il server elimina i messaggi contrassegnati con il flag delete
-        server.deleteMails();
-    } */
+        client.output("UPDATE\n");
+    } 
 }
