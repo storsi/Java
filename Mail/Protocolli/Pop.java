@@ -17,14 +17,14 @@ public class Pop {
     private ArrayList<Mail> nuoveMails;
 
     public Pop(Server server, Account account) {
-        this.client = new Client(server, account);
+        this.client = new Client(server, account, false);
         this.server = server;
         this.account = account;
         nuoveMails = new ArrayList<Mail>();
     }
 
     public ArrayList<Mail> getEmail() {
-        client.connetti(12345);
+        client.connetti(110);
 
         ArrayList<Mail> provvisorio;
         if(autenticazione()) {

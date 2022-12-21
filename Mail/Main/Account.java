@@ -10,7 +10,6 @@ public class Account {
     
     private String password, email;
     private MailPanel mailPanel;
-    private ArrayList<Mail> mailInAttesa;
     private String protocollo;
     private Pop pop;
     private Imap imap;
@@ -19,7 +18,6 @@ public class Account {
     public Account(String email, String password, Server server) {
         pop = new Pop(server, this);
         imap = new Imap(server, this);
-        mailInAttesa = new ArrayList<Mail>();
 
         this.server = server;
         this.email = email;
@@ -37,7 +35,11 @@ public class Account {
     }
 
     private ArrayList<Mail> getEmail() {
-        return server.getMail(email, protocollo);
+        if(protocollo.equals("POP")) {
+            return pop.getEmail();
+        } else {
+            return imap.getMails();
+        }
     }
 
     public void setProtocollo(String protocollo) {

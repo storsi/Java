@@ -9,12 +9,18 @@ import java.util.ArrayList;
 
 public class Server{
     
-    private ServerSocket serverSocket;
-    private Socket socketClient;
+    private ServerSocket serverSocket12345;
+    private ServerSocket serverSocket25;
+    private ServerSocket serverSocket110;
+    private ServerSocket serverSocket143;
+
+    private Socket socketClient12345;
+    private Socket socketClient25;
+    private Socket socketClient110;
+    private Socket socketClient143;
     private int porta;
     private ArrayList<Mail> mailsDaInviare;
     private ArrayList<Account> account;
-    private Thread attesaConnessioni;
 
     public Server(int porta) {
         this.porta = porta;
@@ -28,34 +34,88 @@ public class Server{
         this.porta = porta;
     }
 
+    public boolean a() {
+        return socketClient12345 == null;
+    }
+
     public void connetti() {
         //System.out.println("Server in ascolto su porta: " + porta);
-        attesaConnessioni = new Thread(() -> {
+        Thread attesaConnessioni12345 = new Thread(() -> {
             try{
                 do{
-                    System.out.println("Server in ascolto su porta: " + porta);
-                    serverSocket = new ServerSocket(porta);
+                    serverSocket12345 = new ServerSocket(12345);
     
-                    socketClient = serverSocket.accept();
+                    socketClient12345 = serverSocket12345.accept();
                     System.out.println("[Server] Connesso");
     
                     //Apre un nuovo thread dedicato al client
-                    new Thread(new ClientThread(socketClient, this)).start();
+                    new Thread(new ClientThread(socketClient12345, this)).start();
                 
                 }while(true);
-                    //interrompiThread();
     
             }catch(Exception e) {
-                System.err.println("[Server] Errore nella connessione " + e.getLocalizedMessage());
+                System.err.println("[Server] Errore nella connessione 12345 " + e.getLocalizedMessage());
+            }
+        });
+        
+        Thread attesaConnessioni25 = new Thread(() -> {
+            try{
+                do{
+                    serverSocket25 = new ServerSocket(25);
+    
+                    socketClient25 = serverSocket25.accept();
+                    System.out.println("[Server] Connesso");
+    
+                    //Apre un nuovo thread dedicato al client
+                    new Thread(new ClientThread(socketClient25, this)).start();
+                
+                }while(true);
+    
+            }catch(Exception e) {
+                System.err.println("[Server] Errore nella connessione 25 " + e.getLocalizedMessage());
             }
         });
 
-        attesaConnessioni.start();
+        Thread attesaConnessioni110 = new Thread(() -> {
+            try{
+                do{
+                    serverSocket110 = new ServerSocket(110);
+    
+                    socketClient110 = serverSocket110.accept();
+                    System.out.println("[Server] Connesso");
+    
+                    //Apre un nuovo thread dedicato al client
+                    new Thread(new ClientThread(socketClient110, this)).start();
+                
+                }while(true);
+    
+            }catch(Exception e) {
+                System.err.println("[Server] Errore nella connessione 110 " + e.getLocalizedMessage());
+            }
+        });
         
-    }
+        Thread attesaConnessioni143 = new Thread(() -> {
+            try{
+                do{
+                    serverSocket143 = new ServerSocket(143);
+    
+                    socketClient143 = serverSocket143.accept();
+                    System.out.println("[Server] Connesso");
+    
+                    //Apre un nuovo thread dedicato al client
+                    new Thread(new ClientThread(socketClient143, this)).start();
+                
+                }while(true);
+    
+            }catch(Exception e) {
+                System.err.println("[Server] Errore nella connessione 143 " + e.getLocalizedMessage());
+            }
+        });
 
-    private void interrompiThread() {
-        attesaConnessioni.interrupt();
+        attesaConnessioni12345.start();
+        attesaConnessioni25.start();
+        attesaConnessioni110.start();
+        attesaConnessioni143.start();
     }
 
     public Account checkAccount(String email, String password) {
@@ -162,7 +222,7 @@ class ClientThread implements Runnable{
         mail = new Mail();
         this.socketClient = socketClient;
         this.server = server;
-        //System.out.println("[Server] Thread creato");
+        System.out.println("[Server] Thread creato");
     }
 
     public void run() {
@@ -218,6 +278,13 @@ class ClientThread implements Runnable{
                     server.deleteMails();
                 }
 
+                if(input.contains("New Data?")) {
+                    String[] str = input.split("\\?");
+                    if(server.cercaMail(str[1])) {
+                        out.println("Y\n");
+                    }
+                }
+
                 if(input.contains("IP:")) {
                     
                     mail.setIpmandante(input);
@@ -251,15 +318,8 @@ class ClientThread implements Runnable{
                     if(in != null) in.close();
                     quit = false;
                 
-                } else
-
-                if(input.contains("New Data?")) {
-                    String[] str = input.split("?");
-                    if(server.cercaMail(str[1])) {
-                        out.println("Yes\n");
-                    }
                 }
-                
+
                 else{
                     
                     mail.setContenutoMail(input);

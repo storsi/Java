@@ -21,14 +21,31 @@ public class Client {
 
     private Smtp protSmtp;
 
-    public Client(Server server, Account account) {
+    public Client(Server server, Account account, boolean mainClient) {
         staMandando = false;
         this.server = server;
         this.account = account;
 
         protSmtp = new Smtp(this, server);
 
-        //richiestaMail();
+        if(mainClient) {}
+            //richiestaMail();
+    }
+
+    private void richiestaMail() {
+        Thread richieste = new Thread(() -> {
+            do{
+                connetti(12345);
+                output("New Data?" + account.getMail() + "\n");
+
+                if(input().equals("Y")) {
+                    account.mailDaLeggere();
+                }
+
+            }while(true);
+        });
+
+        richieste.start();
     }
 
     public void mandaMail(Mail mail) {
